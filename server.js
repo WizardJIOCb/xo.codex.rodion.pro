@@ -172,9 +172,10 @@ function serveStatic(req, res, url) {
     }
 
     const extension = path.extname(filePath).toLowerCase();
+    const noStoreAsset = [".html", ".css", ".js"].includes(extension);
     res.writeHead(200, {
       "Content-Type": mimeTypes[extension] || "application/octet-stream",
-      "Cache-Control": extension === ".html" ? "no-store" : "public, max-age=3600"
+      "Cache-Control": noStoreAsset ? "no-store" : "public, max-age=3600"
     });
     res.end(content);
   });
