@@ -546,8 +546,8 @@ meter::-webkit-meter-optimum-value {
 .event-feed {
   display: grid;
   gap: 8px;
-  min-height: 184px;
-  max-height: 236px;
+  height: 236px;
+  min-height: 0;
   margin: 0;
   padding: 0;
   overflow: auto;
