@@ -7,6 +7,7 @@ const state = {
   selectedPower: null,
   source: null,
   data: null,
+  renderSignature: null,
   animatedMarks: new Set(),
   busy: false,
   toastTimer: null
@@ -198,9 +199,15 @@ function connectEvents(code) {
 
 function acceptState(payload) {
   const previous = state.data;
+  const incomingSignature = stateSignature(payload);
+  if (state.renderSignature === incomingSignature) {
+    return;
+  }
+
   const resetAnimations = shouldResetMarkAnimations(previous, payload);
 
   state.data = payload;
+  state.renderSignature = incomingSignature;
   state.clientId = payload.clientId || state.clientId;
   localStorage.setItem(storageKey, state.clientId);
   state.roomCode = payload.room.code;
@@ -328,6 +335,35 @@ function seedExistingMarks(payload) {
 
 function markAnimationKey(room, game, cell) {
   return `${room.code}:${game.mode}:${game.size}:${cell.id}:${cell.mark}`;
+}
+
+function stateSignature(payload) {
+  const { room, game } = payload;
+  return JSON.stringify({
+    room: {
+      code: room.code,
+      opponent: room.opponent,
+      players: room.players,
+      scores: room.scores,
+      you: room.you,
+      isHost: room.isHost,
+      mode: room.mode
+    },
+    game: {
+      mode: game.mode,
+      size: game.size,
+      winLength: game.winLength,
+      turn: game.turn,
+      moveId: game.moveId,
+      status: game.status,
+      winner: game.winner,
+      winningLine: game.winningLine,
+      sparks: game.sparks,
+      energy: game.energy,
+      cells: game.cells.map((cell) => (cell ? `${cell.mark}:${cell.id}:${cell.charged ? 1 : 0}` : "")),
+      events: game.events.map((event) => event.id)
+    }
+  });
 }
 
 function renderEvents(events) {
