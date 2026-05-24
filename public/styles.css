@@ -353,6 +353,9 @@ button:disabled {
   font-weight: 900;
   pointer-events: none;
   text-shadow: 0 12px 30px rgba(0, 0, 0, 0.44);
+}
+
+.mark.fresh {
   animation: markIn 180ms ease-out both;
 }
 

@@ -7,6 +7,7 @@ const state = {
   selectedPower: null,
   source: null,
   data: null,
+  animatedMarks: new Set(),
   busy: false,
   toastTimer: null
 };
@@ -196,11 +197,22 @@ function connectEvents(code) {
 }
 
 function acceptState(payload) {
+  const previous = state.data;
+  const resetAnimations = shouldResetMarkAnimations(previous, payload);
+
   state.data = payload;
   state.clientId = payload.clientId || state.clientId;
   localStorage.setItem(storageKey, state.clientId);
   state.roomCode = payload.room.code;
   state.selectedMode = payload.room.mode;
+
+  if (resetAnimations) {
+    state.animatedMarks = new Set();
+  }
+
+  if (!previous || resetAnimations) {
+    seedExistingMarks(payload);
+  }
 
   if (state.selectedPower === "pulse" && !canUsePulse(payload)) {
     state.selectedPower = null;
@@ -283,16 +295,39 @@ function renderBoard(room, game, mode) {
 
     if (cell) {
       const mark = document.createElement("span");
-      mark.className = `mark mark-${cell.mark.toLowerCase()}`;
+      const markKey = markAnimationKey(room, game, cell);
+      const isFresh = !state.animatedMarks.has(markKey);
+      mark.className = `mark mark-${cell.mark.toLowerCase()}${isFresh ? " fresh" : ""}`;
       mark.textContent = cell.mark;
       button.append(mark);
       button.ariaLabel = `${cell.mark}, клетка ${index + 1}`;
+      state.animatedMarks.add(markKey);
     } else {
       button.ariaLabel = `Пустая клетка ${index + 1}`;
     }
 
     dom.board.append(button);
   });
+}
+
+function shouldResetMarkAnimations(previous, payload) {
+  if (!previous) return true;
+  if (previous.room.code !== payload.room.code) return true;
+  if (previous.game.mode !== payload.game.mode) return true;
+  if (previous.game.size !== payload.game.size) return true;
+  return payload.game.moveId < previous.game.moveId;
+}
+
+function seedExistingMarks(payload) {
+  for (const cell of payload.game.cells) {
+    if (cell) {
+      state.animatedMarks.add(markAnimationKey(payload.room, payload.game, cell));
+    }
+  }
+}
+
+function markAnimationKey(room, game, cell) {
+  return `${room.code}:${game.mode}:${game.size}:${cell.id}:${cell.mark}`;
 }
 
 function renderEvents(events) {
