@@ -4,6 +4,7 @@ const path = require("path");
 const crypto = require("crypto");
 
 const PORT = Number(process.env.PORT || 3000);
+const HOST = process.env.HOST || "127.0.0.1";
 const PUBLIC_DIR = path.join(__dirname, "public");
 
 const modes = {
@@ -72,8 +73,8 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`Rift XO is running at http://localhost:${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log(`Rift XO is running at http://${HOST}:${PORT}`);
 });
 
 async function handleApi(req, res, url) {
