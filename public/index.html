@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rift XO</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <canvas id="fieldCanvas" aria-hidden="true"></canvas>
+
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-sigil" aria-hidden="true">XO</div>
+          <div>
+            <h1>Rift XO</h1>
+            <p id="roomLine">Арена загружается</p>
+          </div>
+        </div>
+
+        <div class="top-actions">
+          <button class="icon-button" id="shareButton" type="button" title="Скопировать ссылку">↗</button>
+          <button class="icon-button" id="resetButton" type="button" title="Новая партия">↻</button>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <section class="arena-panel" aria-label="Игровая арена">
+          <div class="score-strip" aria-label="Счет">
+            <div class="score-block score-x">
+              <span>X</span>
+              <strong id="scoreX">0</strong>
+            </div>
+            <div class="turn-core" id="turnCore">
+              <span id="turnLabel">Ход X</span>
+              <strong id="stateLabel">Рифт</strong>
+            </div>
+            <div class="score-block score-o">
+              <span>O</span>
+              <strong id="scoreO">0</strong>
+            </div>
+          </div>
+
+          <div class="board-frame">
+            <div id="board" class="board" aria-label="Поле"></div>
+          </div>
+
+          <div class="power-row">
+            <button class="power-button" id="pulseButton" type="button" title="Импульс">
+              <span class="power-icon" aria-hidden="true">✦</span>
+              <span>Импульс</span>
+              <strong id="pulseCost">2</strong>
+            </button>
+            <div class="energy-bank" aria-label="Энергия">
+              <div>
+                <span>X</span>
+                <meter id="energyX" min="0" max="5" value="0"></meter>
+              </div>
+              <div>
+                <span>O</span>
+                <meter id="energyO" min="0" max="5" value="0"></meter>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-panel" aria-label="Управление">
+          <section class="panel-section">
+            <div class="section-label">Режим</div>
+            <div class="segmented" id="modeButtons">
+              <button type="button" data-mode="classic">Классика</button>
+              <button type="button" data-mode="rift">Рифт</button>
+              <button type="button" data-mode="supernova">Сверхнова</button>
+            </div>
+          </section>
+
+          <section class="panel-section room-section">
+            <div class="section-label">Комната</div>
+            <div class="room-code" id="roomCode">----</div>
+            <div class="room-actions">
+              <button type="button" id="botRoomButton">Бот</button>
+              <button type="button" id="onlineRoomButton">Онлайн</button>
+            </div>
+            <form class="join-form" id="joinForm">
+              <input id="joinInput" autocomplete="off" maxlength="8" placeholder="Код" />
+              <button type="submit">Войти</button>
+            </form>
+          </section>
+
+          <section class="panel-section status-section">
+            <div class="section-label">Статус</div>
+            <dl class="status-grid">
+              <div>
+                <dt>Вы</dt>
+                <dd id="youLabel">X</dd>
+              </div>
+              <div>
+                <dt>Сетка</dt>
+                <dd id="gridLabel">3×3</dd>
+              </div>
+              <div>
+                <dt>Линия</dt>
+                <dd id="lineLabel">3</dd>
+              </div>
+              <div>
+                <dt>Ничьи</dt>
+                <dd id="tieScore">0</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel-section event-section">
+            <div class="section-label">Пульс</div>
+            <ol id="eventFeed" class="event-feed"></ol>
+          </section>
+        </aside>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

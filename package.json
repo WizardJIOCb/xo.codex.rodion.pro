@@ -1,0 +1,13 @@
+{
+  "name": "rift-xo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Online tic-tac-toe arena with rift mechanics, energy cells, bots, and room codes.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
